@@ -6,4 +6,18 @@
 
 int paramsOk(int argc, char* argv[]);
 
-int assemble(char *inputFileName, char *outputFileName); 
+FILE *openFile(char* name, char *mode);
+
+bool hasComment(char *line);
+
+void ltrim(char *str);
+
+void rtrim(char *str);
+
+void trim(char *str);
+
+void filterComment(char *line);
+
+void convertToBase2_16Bit(int val, char *res);
+
+int isRegA(char *instr);
