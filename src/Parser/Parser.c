@@ -1,7 +1,9 @@
 #include "Parser.h"
 // #include "../Symbol/Symbol.h"
 
+
 #define COMMENT "//"
+
 
 int paramsOk(int argc, char* argv[]) 
 {
@@ -18,6 +20,7 @@ int paramsOk(int argc, char* argv[])
   }
   return 1;
 }
+
 
 FILE *openFile(char* name, char *mode) 
 {
@@ -106,7 +109,64 @@ void convertToBase2_16Bit(int val, char *res)
   }
 }
 
+
 int isRegA(char *instr) 
 {
   return instr[0] == '@';
-} 
+}
+
+
+struct FileContent *createFileContent() 
+{
+  struct FileContent *content = (struct FileContent*)malloc(sizeof(struct FileContent));
+  content->numLines = 0;
+  return content;
+}
+
+
+int addLine(char *lineToAdd, struct FileContent *content) 
+{
+  if (lineToAdd == NULL || content == NULL) return 1;
+  
+  content->lines = (char**)realloc(content->lines, sizeof(char*) * (++content->numLines));
+
+  if (content->lines == NULL) return 1;
+
+  int len = strlen(lineToAdd);
+  char *currentLine = (char*)malloc(sizeof (char) * len + 1);
+  memcpy(currentLine, lineToAdd, sizeof (char) * len);
+  currentLine[len] = '\0';
+
+  content->lines[((content->numLines - 1))] = currentLine;
+  return 0;
+}
+
+
+void deleteFileContent(struct FileContent *content) 
+{
+  for (int i = 0; i < content->numLines; i++) 
+  {
+    free(content->lines[i]);
+  }
+  free(content->lines);
+  free(content);
+}
+
+
+struct FileContent *readFile(FILE *file)
+{
+  struct FileContent *content = createFileContent();
+  int buffSize = 1024 + 1;
+  char *tmp = (char*)malloc(sizeof (char) * buffSize);
+  tmp[(buffSize - 1)] = '\0';
+
+  if (tmp == NULL || content == NULL) return NULL;
+
+  while (fgets(tmp, buffSize, file) != NULL) 
+  {
+    addLine(tmp, content);
+  }
+
+  free(tmp);
+  return content;
+}

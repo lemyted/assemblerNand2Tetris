@@ -21,3 +21,17 @@ void filterComment(char *line);
 void convertToBase2_16Bit(int val, char *res);
 
 int isRegA(char *instr);
+
+struct FileContent 
+{
+  int numLines;
+  char **lines;
+};
+
+struct FileContent *createFileContent();
+
+int addLine(char *lineToAdd, struct FileContent *content);
+
+void deleteFileContent(struct FileContent *table);
+
+struct FileContent *readFile(FILE *name);

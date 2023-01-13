@@ -1,2 +1,4 @@
-- add pc
+- reformat translate function by creating the readFile function
+- add unit tests for new Parser functions
+- implement getLabels function
 - fix console test mode 

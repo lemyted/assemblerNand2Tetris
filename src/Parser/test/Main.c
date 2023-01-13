@@ -130,6 +130,55 @@ void test_notRegAInstruction_isRegA_false(void)
 }
 
 
+// createFileContent
+void test_createFileContent_returnValidFileContent(void) 
+{
+  struct FileContent *content = createFileContent();
+  CU_ASSERT_PTR_NOT_EQUAL(content, NULL);
+  CU_ASSERT_EQUAL(content->numLines, 0);
+  deleteFileContent(content);
+}
+
+
+// addLine
+void test_validPrams_createFileContent_lineAdded(void) 
+{
+  struct FileContent *content = createFileContent();
+  char line1[] = "hello";
+  char line2[] = "world";
+  addLine(line1, content);
+  addLine(line2, content);
+  CU_ASSERT_EQUAL(content->numLines, 2);
+  CU_ASSERT_STRING_EQUAL(content->lines[0], line1);
+  CU_ASSERT_STRING_EQUAL(content->lines[1], line2);
+  deleteFileContent(content);
+}
+
+
+// deleteFileContent
+void test_validFileContent_deleteFileContent_fileContentDeleted(void) 
+{
+  struct FileContent *content = createFileContent();
+  char line1[] = "hello";
+  char line2[] = "world";
+  addLine(line1, content);
+  addLine(line2, content);
+  deleteFileContent(content);
+  CU_ASSERT_NOT_EQUAL(content->numLines, 2);
+}
+
+
+// readFile
+void test_validFile_readFile_validResult(void) 
+{
+  FILE *file = openFile("resources/Parser.txt", "r");
+  struct FileContent *content = readFile(file);
+  CU_ASSERT_PTR_NOT_NULL(content);
+  CU_ASSERT_EQUAL(content->numLines, 9);
+  deleteFileContent(content);
+}
+
+
 int main(int argc, char *argv[]) 
 {
   CU_initialize_registry();
@@ -163,6 +212,18 @@ int main(int argc, char *argv[])
   CU_pSuite isRegATestSuite = CU_add_suite("isRegATestSuite", NULL, NULL);
   CU_add_test(isRegATestSuite, "test_regAInstruction_isRegA_true", test_regAInstruction_isRegA_true);
   CU_add_test(isRegATestSuite, "test_notRegAInstruction_isRegA_false", test_notRegAInstruction_isRegA_false);
+
+  CU_pSuite createFileContentTestSuite = CU_add_suite("createFileContent", NULL, NULL);
+  CU_add_test(createFileContentTestSuite, "test_createFileContent_returnValidFileContent", test_createFileContent_returnValidFileContent); 
+
+  CU_pSuite addLineTestSuite = CU_add_suite("addLineTestSuite", NULL, NULL);
+  CU_add_test(addLineTestSuite, "test_validPrams_createFileContent_lineAdded", test_validPrams_createFileContent_lineAdded);
+
+  CU_pSuite deleteFileContentTestSuite = CU_add_suite("deleteFileContentTestSuite", NULL, NULL);
+  CU_add_test(deleteFileContentTestSuite, "test_validFileContent_deleteFileContent_fileContentDeleted", test_validFileContent_deleteFileContent_fileContentDeleted);
+
+  CU_pSuite readFileTestSuite = CU_add_suite("readFileTestSuite", NULL, NULL);
+  CU_add_test(readFileTestSuite, "test_validFile_readFile_validResult", test_validFile_readFile_validResult);
 
   if (strcmp(argv[1], "-basic\n")) 
   {

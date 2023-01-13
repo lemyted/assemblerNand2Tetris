@@ -2,6 +2,12 @@
 #include "Symbol/Symbol.h"
 #include "Label/Label.h"
 
+struct LabelTable *getLabels() 
+{
+ int pc = 1;
+
+}
+
 char *handleRegAInstruction(char *str) 
 {
   char *label = strtok(str + 1, "\n");
@@ -13,7 +19,7 @@ char *handleRegAInstruction(char *str)
   } 
   else 
   {
-    // convertToBase2_16Bit(pc++, str);
+    // convertToBase2_16Bit(*pc, str);
   } 
   strcat(str, "\n");
 
@@ -39,7 +45,6 @@ char *asmToBin(char *line)
 
 void translate(FILE *inputFile, FILE *outputFile) 
 {
-  int pc = 0;
   int buffSize = 1024 + 1;
   char *line = (char*)malloc(sizeof (char) * buffSize);
   line[(sizeof line / sizeof (char) - 1)] = '\0';
@@ -55,13 +60,14 @@ void translate(FILE *inputFile, FILE *outputFile)
 
       bool isNotEmptyLine = strcmp(line, "\n") != 0;
 
-      if (strlen(line) || isNotEmptyLine)
+      if (strlen(line) && isNotEmptyLine)
       {
         fputs(asmToBin(line), outputFile);
       }
     }
     
   }
+
   free(line);
 }
 

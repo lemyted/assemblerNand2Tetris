@@ -45,9 +45,9 @@ void deleteLabel(struct Label* label)
 
 struct LabelTable *createLabelTable() 
 {
-  struct LabelTable *labels = (struct LabelTable*)malloc(sizeof(struct LabelTable));
-  labels->length = 0;
-  return labels;
+  struct LabelTable *table = (struct LabelTable*)malloc(sizeof(struct LabelTable));
+  table->length = 0;
+  return table;
 }
 
 int addLabel(struct Label *toAdd, struct LabelTable *table) 

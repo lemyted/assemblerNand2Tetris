@@ -27,6 +27,9 @@ testParserConsole:
 testParserBasic:
 	gcc $(PARSER_TEST_MODULE) -o ./tests/$(PARSER_TEST_NAME) -lcunit
 	./tests/$(PARSER_TEST_NAME) -basic
+testParserDebug:
+	gcc $(PARSER_TEST_MODULE) -o ./tests/$(PARSER_TEST_NAME) -lcunit -g
+	gdb --args ./tests/$(PARSER_TEST_NAME)
 
 testSymbolConsole:
 	gcc $(SYMBOL_TEST_MODULE) -o ./tests/$(SYMBOL_TEST_NAME) -lcunit
