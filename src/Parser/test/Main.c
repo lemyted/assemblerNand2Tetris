@@ -171,10 +171,16 @@ void test_validFileContent_deleteFileContent_fileContentDeleted(void)
 // readFile
 void test_validFile_readFile_validResult(void) 
 {
+  char line0[] = "line0\n";
+  char line4[] = "line4\n";
+  char line8[] = "line8";
   FILE *file = openFile("resources/Parser.txt", "r");
   struct FileContent *content = readFile(file);
   CU_ASSERT_PTR_NOT_NULL(content);
   CU_ASSERT_EQUAL(content->numLines, 9);
+  CU_ASSERT_STRING_EQUAL(content->lines[0], line0);
+  CU_ASSERT_STRING_EQUAL(content->lines[4], line4);
+  CU_ASSERT_STRING_EQUAL(content->lines[8], line8);
   deleteFileContent(content);
 }
 

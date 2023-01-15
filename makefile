@@ -10,15 +10,16 @@ PARSER_MODULE=./src/Parser/Parser.c
 PARSER_TEST_MODULE=$(PARSER_MODULE) ./src/Parser/test/Main.c
 PARSER_TEST_NAME=ParserTest
 
+MODULES=$(PARSER_MODULE) $(SYMBOL_MODULE) $(LABEL_MODULE)
 BIN=assembler
 REMOVE_FILE_IF_EXISTS=rm -f ./${BIN}
 
 main:
 	$(REMOVE_FILE_IF_EXISTS)
-	gcc ./src/Main.c $(PARSER_MODULE) $(SYMBOL_MODULE) $(LABEL_MODULE) -o $(BIN)
+	gcc ./src/Main.c $(MODULES) -o $(BIN)
 debug:
 	$(REMOVE_FILE_IF_EXISTS)
-	gcc ./src/Main.c $(PARSER_MODULE) -g -o $(BIN)
+	gcc ./src/Main.c $(MODULES) -g -o $(BIN)
 	gdb --args $(BIN) input/Mult.asm output/Prog.hack
 
 testParserConsole:

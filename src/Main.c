@@ -1,14 +1,26 @@
-#include "Parser/Parser.h"
-#include "Symbol/Symbol.h"
-#include "Label/Label.h"
+#include "Main.h"
 
-struct LabelTable *getLabels() 
+struct LabelTable *getLabels(struct FileContent *content) 
 {
- int pc = 1;
+  if (content == NULL) return NULL;
 
+  struct LabelTable *table = createLabelTable();
+
+  for (int pc = 0; pc < content->numLines; pc++) 
+  {
+    char *line = content->lines[pc];
+    trim(line);
+
+    if (isLabel(line)) 
+    {
+      struct Label *label = createLabel(removeParentheses(line), pc); 
+      addLabel(label, table);
+    }
+  }
+  return table;
 }
 
-char *handleRegAInstruction(char *str) 
+char *handleRegAInstruction(char *str, struct LabelTable *table) 
 {
   char *label = strtok(str + 1, "\n");
   int addr = getRAMAddressSymbol(label);
@@ -19,7 +31,7 @@ char *handleRegAInstruction(char *str)
   } 
   else 
   {
-    // convertToBase2_16Bit(*pc, str);
+    convertToBase2_16Bit(getLabel(label, table)->value, str);
   } 
   strcat(str, "\n");
 
@@ -27,12 +39,12 @@ char *handleRegAInstruction(char *str)
 }
 
 
-char *asmToBin(char *line) 
+char *asmToBin(char *line, struct LabelTable *table) 
 {
   if (isRegA(line)) 
   {
     line = realloc(line, sizeof(char) * 17);
-    line = handleRegAInstruction(line);
+    line = handleRegAInstruction(line, table);
   }
   else 
   {
@@ -45,30 +57,28 @@ char *asmToBin(char *line)
 
 void translate(FILE *inputFile, FILE *outputFile) 
 {
-  int buffSize = 1024 + 1;
-  char *line = (char*)malloc(sizeof (char) * buffSize);
-  line[(sizeof line / sizeof (char) - 1)] = '\0';
+  struct FileContent *content = readFile(inputFile);
+  struct LabelTable *table = getLabels(content);
 
-  while (fgets(line, buffSize, inputFile) != NULL) 
+  for (int i = 0; i < content->numLines; i++) 
   {
+    char *line = content->lines[i];
     trim(line);
     strcat(line, "\n");
 
     if (line[0] != '/' && line[1] != '/') 
     {
       filterComment(line);
-
       bool isNotEmptyLine = strcmp(line, "\n") != 0;
 
       if (strlen(line) && isNotEmptyLine)
       {
-        fputs(asmToBin(line), outputFile);
+        fputs(asmToBin(line, table), outputFile);
       }
     }
-    
   }
-
-  free(line);
+  deleteLabelTable(table);
+  deleteFileContent(content);
 }
 
 

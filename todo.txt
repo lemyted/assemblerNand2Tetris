@@ -1,4 +1,3 @@
-- reformat translate function by creating the readFile function
-- add unit tests for new Parser functions
-- implement getLabels function
-- fix console test mode 
+- trim lines in getLabels function
+- fix console test mode
+- add openFile test in Parser 

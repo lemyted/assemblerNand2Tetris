@@ -7,7 +7,7 @@ bool isLabel(char *str);
 struct Label 
 {
   char *key;
-  char *value;
+  int value;
 };
 
 struct LabelTable 
@@ -16,7 +16,7 @@ struct LabelTable
   struct Label **labels;
 };
 
-struct Label *createLabel(char *key, char *value);
+struct Label *createLabel(char *key, int value);
 
 void deleteLabel(struct Label *label);
 
@@ -29,3 +29,5 @@ struct Label *getLabel(char *key, struct LabelTable *table);
 int removeLabel(char *key, struct LabelTable *table);
 
 void deleteLabelTable(struct LabelTable *table);
+
+char *removeParentheses(char *line);

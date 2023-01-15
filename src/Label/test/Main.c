@@ -35,27 +35,27 @@ void test_nullLabel_isLabel_returnFalse(void)
 // createLabel
 void test_validPrams_createLabel_keyValueValid(void) 
 {
-  struct Label *label = createLabel("key", "value");
+  struct Label *label = createLabel("key", 1);
   CU_ASSERT_STRING_EQUAL(label->key, "key");
-  CU_ASSERT_STRING_EQUAL(label->value, "value");
+  CU_ASSERT_EQUAL(label->value, 1);
   deleteLabel(label); 
 }
 
 void test_nullParams_createLabel_labelNull(void) 
 {
- struct Label *label = createLabel(NULL, NULL);
- CU_ASSERT_PTR_NULL(label);
+  struct Label *label = createLabel(NULL, 0);
+  CU_ASSERT_PTR_NULL(label);
 }
 
 
 // deleteLabel
 void test_validLabel_deleteLabel_labelNull(void) 
 {
-  struct Label *label = createLabel("key", "value");
+  struct Label *label = createLabel("key", 1);
   CU_ASSERT_PTR_NOT_NULL(label);
   deleteLabel(label);
   CU_ASSERT_STRING_NOT_EQUAL(label->key, "key");
-  CU_ASSERT_STRING_NOT_EQUAL(label->value, "value");
+  CU_ASSERT_NOT_EQUAL(label->value, 1);
 }
 
 
@@ -73,9 +73,9 @@ void test_createLableTable_tableValid(void)
 void test_validLabel_addLabel_labelAdded(void) 
 {
   char k1[] = "key1";
-  char v1[] = "value1";
+  int v1 = 1;
   char k2[] = "key2";
-  char v2[] = "value2";
+  int v2 = 2;
   struct LabelTable *table = createLabelTable();
   struct Label *label1 = createLabel(k1, v1);
   struct Label *label2 = createLabel(k2, v2);
@@ -83,9 +83,9 @@ void test_validLabel_addLabel_labelAdded(void)
   addLabel(label2, table);
   CU_ASSERT_EQUAL(table->length, 2);
   CU_ASSERT_STRING_EQUAL(table->labels[0]->key, k1);
-  CU_ASSERT_STRING_EQUAL(table->labels[0]->value, v1);
+  CU_ASSERT_EQUAL(table->labels[0]->value, v1);
   CU_ASSERT_STRING_EQUAL(table->labels[1]->key, k2);
-  CU_ASSERT_STRING_EQUAL(table->labels[1]->value, v2);
+  CU_ASSERT_EQUAL(table->labels[1]->value, v2);
   deleteLabelTable(table);
 }
 
@@ -104,9 +104,9 @@ void test_nullLabel_addLabel_labelNotAdded(void)
 void test_validkey_getLabel_returnLabel(void) 
 {
   char k1[] = "key1";
-  char v1[] = "value1";
+  int v1 = 1;
   char k2[] = "key2";
-  char v2[] = "value2";
+  int v2 = 2;
   struct LabelTable *table = createLabelTable();
   struct Label *label1 = createLabel(k1, v1);
   struct Label *label2 = createLabel(k2, v2);
@@ -114,17 +114,17 @@ void test_validkey_getLabel_returnLabel(void)
   addLabel(label2, table);
   struct Label *res1 = getLabel(k1, table);
   struct Label *res2 = getLabel(k2, table);
-  CU_ASSERT_STRING_EQUAL(res1->value, v1);
-  CU_ASSERT_STRING_EQUAL(res2->value, v2)
+  CU_ASSERT_EQUAL(res1->value, v1);
+  CU_ASSERT_EQUAL(res2->value, v2)
   deleteLabelTable(table);
 }
 
 void test_invalidKey_getLabel_returnNull(void) 
 {
   char k1[] = "key1";
-  char v1[] = "value1";
+  int v1 = 1;
   char k2[] = "key2";
-  char v2[] = "value2";
+  int v2 = 2;
   struct LabelTable *table = createLabelTable();
   struct Label *label1 = createLabel(k1, v1);
   struct Label *label2 = createLabel(k2, v2);
@@ -142,9 +142,9 @@ void test_invalidKey_getLabel_returnNull(void)
 void test_validLabel_removeLabel_labelRemoved(void) 
 {
   char k1[] = "key1";
-  char v1[] = "value1";
+  int v1 = 1;
   char k2[] = "key2";
-  char v2[] = "value2";
+  int v2 = 2;
   struct LabelTable *table = createLabelTable();
   struct Label *label1 = createLabel(k1, v1);
   struct Label *label2 = createLabel(k2, v2);
@@ -160,9 +160,9 @@ void test_validLabel_removeLabel_labelRemoved(void)
 void test_inexistantLabel_removeLabel_labelNotRemoved(void) 
 {
   char k1[] = "key1";
-  char v1[] = "value1";
+  int v1 = 1;
   char k2[] = "key2";
-  char v2[] = "value2";
+  int v2 = 2;
   struct LabelTable *table = createLabelTable();
   struct Label *label1 = createLabel(k1, v1);
   struct Label *label2 = createLabel(k2, v2);
@@ -184,25 +184,28 @@ void test_validTable_deleteTable_tableDeleted(void)
   CU_ASSERT_NOT_EQUAL(table->length, 0);
 }
 
+// removeParenthesesTestSuite
+void test_strWithParentheses_removeParentheses_parenthesesRemoved(void) 
+{
+  char *str = (char*)malloc(sizeof(char) * 8);
+  char s[] = "(hello)";
+  strcpy(str, s);
+  str[8] = '\0';
+  CU_ASSERT_STRING_EQUAL(removeParentheses(str), "hello");
+  free(str);
+}
+
 void manualDebug(void) 
 {
-  char k1[] = "key1";
-  char v1[] = "value1";
-  char k2[] = "key2";
-  char v2[] = "value2";
-  struct LabelTable *table = createLabelTable();
-  struct Label *label1 = createLabel(k1, v1);
-  struct Label *label2 = createLabel(k2, v2);
-  addLabel(label1, table);
-  addLabel(label2, table);
-  int status = removeLabel(k1, table);
-  deleteLabelTable(table);
+  char *str = (char*)malloc(sizeof(char) * 8);
+  str = "(hello)";
+  CU_ASSERT_STRING_EQUAL(removeParentheses(str), "hello");
+  free(str);
 }
 
 int main(int argc, char *argv[]) 
 {
-  // manualDebug();
-
+  //manualDebug();
   CU_initialize_registry();
 
   CU_pSuite isLabelTestSuite = CU_add_suite("isLabelTestSuite", NULL, NULL);
@@ -234,6 +237,9 @@ int main(int argc, char *argv[])
 
   CU_pSuite deleteLabelTableTestSuite = CU_add_suite("deleteLabelTableTestSuite", NULL, NULL);
   CU_add_test(deleteLabelTableTestSuite, "test_validTable_deleteTable_tableDeleted", test_validTable_deleteTable_tableDeleted);
+
+  CU_pSuite removeParenthesesTestSuite = CU_add_suite("removeParenthesesTestSuite", NULL, NULL);
+  CU_add_test(removeParenthesesTestSuite, " test_strWithParentheses_removeParentheses_parenthesesRemoved",  test_strWithParentheses_removeParentheses_parenthesesRemoved);
 
   if (strcmp(argv[1], "-basic\n")) 
   {

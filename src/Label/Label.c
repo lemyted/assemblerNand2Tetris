@@ -5,29 +5,23 @@ bool isLabel(char *str)
 {
   if (str[0] == '(' && str[1] != ')' && str != NULL) 
   {
-    return strstr(str, ")");
+    return str[(strlen(str) - 1)] == ')';
   }
   return false;
 }
 
-struct Label *createLabel(char *key, char *value) 
+struct Label *createLabel(char *key, int value) 
 {
-  if (key == NULL || value == NULL) 
-  {
-    return NULL;
-  }
+  if (key == NULL) return NULL;
 
   int lenKey = strlen(key);
-  int lenValue = strlen(value);
-
   struct Label* label = (struct Label*)malloc(sizeof (struct Label));
   label->key = (char*)malloc(sizeof (char) * (lenKey + 1));
-  label->value = (char*)malloc(sizeof (char) * (lenValue + 1));
 
-  if (key != NULL && value != NULL) 
+  if (key != NULL) 
   {
     strcpy(label->key, key);
-    strcpy(label->value, value);
+    label->value = value;
   }
 
   return label;
@@ -38,7 +32,6 @@ void deleteLabel(struct Label* label)
   if (label != NULL) 
   {
     free(label->key);
-    free(label->value);
     free(label);
   }
 }
@@ -52,17 +45,11 @@ struct LabelTable *createLabelTable()
 
 int addLabel(struct Label *toAdd, struct LabelTable *table) 
 {
-  if (toAdd == NULL || table == NULL) 
-  {
-    return 1;
-  }
+  if (toAdd == NULL || table == NULL) return 1;
 
   table->labels = (struct Label**)realloc(table->labels, sizeof(struct Label*) * (++table->length));
 
-  if (table->labels == NULL) 
-  {
-    return 1;
-  }
+  if (table->labels == NULL) return 1;
 
   int i = (table->length - 1);
   struct Label *currentLabel = (struct Label*)malloc(sizeof (struct Label));
@@ -77,20 +64,14 @@ struct Label *getLabel(char *key, struct LabelTable *table)
   {
     struct Label *current = table->labels[i];
 
-    if (strcmp(current->key, key) == 0) 
-    {
-      return current; 
-    }
+    if (strcmp(current->key, key) == 0) return current; 
   }
   return NULL;
 }
 
 int removeLabel(char *key, struct LabelTable *table) 
 {
-  if (table == NULL) 
-  {
-    return 1;
-  }
+  if (table == NULL) return 1;
 
   bool isFound = false;
 
@@ -129,4 +110,18 @@ void deleteLabelTable(struct LabelTable *table)
     free(table->labels);
   }
   free(table);
+}
+
+char *removeParentheses(char *line) 
+{
+  int newLen = strlen(line) - 2; // remove both parentheses
+
+  for (int i = 0; line[i] != '\0'; i++) 
+  {
+    line[i] = line[(i+1)];
+  }
+
+  line[newLen] = '\0';
+  line = (char*)realloc(line, sizeof (char) * (newLen + 1));
+  return line;
 }
